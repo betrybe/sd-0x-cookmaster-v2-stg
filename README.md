@@ -26,6 +26,8 @@ Aqui você vai encontrar os detalhes de como estruturar o desenvolvimento do seu
   - [Conexão com o Banco](#conexão-com-o-banco)
   - [Tabelas](#tabelas)
   - [Linter](#linter)
+  - [Testes](#testes)
+    - [Dica: desativando testes](#dica-desativando-testes)
 - [Requisitos do projeto](#requisitos-do-projeto)
   - [Lista de requisitos](#lista-de-requisitos)
     - [1 - Crie um endpoint para o cadastro de usuários](#1---crie-um-endpoint-para-o-cadastro-de-usuários)
@@ -298,6 +300,55 @@ Para poder rodar os `ESLint` em um projeto basta executar o comando `npm install
 ⚠ PULL REQUESTS COM ISSUES DE LINTER NÃO SERÃO AVALIADAS. ATENTE-SE PARA RESOLVÊ-LAS ANTES DE FINALIZAR O DESENVOLVIMENTO! ⚠
 
 Você pode também instalar o plugin do `ESLint` no `VSCode`, bastar ir em extensions e baixar o [plugin `ESLint`](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint).
+
+## Testes
+
+Todos os requisitos do projeto serão testados **automaticamente**. Cada `endpoint` possui vários requisitos e os testes para cada requisito de um `endpoint` estão no arquivo de teste correspondente.
+
+_**Por exemplo**: Os requisitos relacionados ao `endpoint` `/users` estão no arquivo `users.test.js`._
+
+Para executar os testes localmente, digite no terminal o comando `npm test`.
+
+Inicialmente todos os testes falharão:
+
+![Todos os testes falharão](./public/all-tests-fail.jpeg)
+
+### Dica: desativando testes
+
+Especialmente no início, quando a maioria dos testes está falhando, a saída após executar os testes é bastante poluída. Você pode desabilitar temporariamente um teste utilizando a função `skip` junto à função `it`. Como o nome indica, esta função "pula" um teste:
+
+```js
+  it.skip('Será validado que o campo "email" é obrigatório', async () => {
+    await frisby
+      .post(`${url}/users/`,
+        {
+          name: 'Erick Jacquin',
+          password: '12345678',
+        })
+      .expect('status', 400)
+      .then((response) => {
+        const { body } = response;
+        const result = JSON.parse(body);
+        expect(result.message).toBe('Invalid entries. Try again.');
+      });
+  })
+```
+
+Uma estratégia é pular todos os testes no início e ir implementando um teste de cada vez, removendo dele a função `skip`.
+
+![Testando um arquivo específico](./public/skip-tests.jpeg)
+
+Você também pode rodar apenas um arquivo de teste, por exemplo:
+
+```bash
+npm test users.test.js
+```
+
+![Testando um arquivo específico](./public/running-one-test-file.jpeg)
+
+⚠️ Lembre-se de não entregar o projeto com nenhum teste ignorado. **Testes ignorados serão tratados como testes falhando**. ⚠️
+
+⚠️ **Não apague, em hipótese alguma, qualquer teste ou arquivo deste repositório**. ⚠️
 
 ---
 
